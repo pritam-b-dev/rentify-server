@@ -71,6 +71,18 @@ async function run() {
       }
     });
 
+    app.delete("/car/:id", async (req, res) => {
+      const { id } = req.params;
+      try {
+        const result = await carCollection.deleteOne({
+          _id: new ObjectId(id),
+        });
+        res.json(result);
+      } catch (err) {
+        res.status(400).json({ message: "Invalid ID format" });
+      }
+    });
+
     // api for cars ends
     //------------------------------------------------------
   } catch (error) {
