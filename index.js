@@ -3,9 +3,11 @@ const app = express();
 app.use(express.json());
 const cors = require("cors");
 app.use(cors());
+const dotenv = require("dotenv");
+dotenv.config();
 const { MongoClient, ServerApiVersion } = require("mongodb");
 const uri = process.env.MONGODB_URI;
-const PORT = process.env.PORT || 5000;
+const PORT = 5000;
 
 const client = new MongoClient(uri, {
   serverApi: {
