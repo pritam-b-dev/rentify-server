@@ -5,7 +5,7 @@ const cors = require("cors");
 app.use(cors());
 const dotenv = require("dotenv");
 dotenv.config();
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const uri = process.env.MONGODB_URI;
 const PORT = 5000;
 
@@ -43,6 +43,32 @@ async function run() {
     app.get("/car", async (req, res) => {
       const result = await carCollection.find().toArray();
       res.json(result);
+    });
+
+    app.get("/car/:id", async (req, res) => {
+      const { id } = req.params;
+      try {
+        const result = await carCollection.findOne({
+          _id: new ObjectId(id),
+        });
+        res.json(result);
+      } catch (err) {
+        res.status(400).json({ message: "Invalid ID format" });
+      }
+    });
+
+    app.patch("/car/:id", async (req, res) => {
+      const { id } = req.params;
+      const updatedData = req.body;
+      try {
+        const result = await carCollection.updateOne(
+          { _id: new ObjectId(id) },
+          { $set: updatedData },
+        );
+        res.json(result);
+      } catch (err) {
+        res.status(400).json({ message: "Invalid ID format" });
+      }
     });
 
     // api for cars ends
