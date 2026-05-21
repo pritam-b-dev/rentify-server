@@ -100,6 +100,10 @@ async function run() {
     app.post("/bookings", async (req, res) => {
       const bookingData = req.body;
       const result = await bookingCollection.insertOne(bookingData);
+      await carCollection.updateOne(
+        { _id: new ObjectId(bookingData.carId) },
+        { $inc: { booking_count: 1 } },
+      );
       res.json(result);
     });
 
