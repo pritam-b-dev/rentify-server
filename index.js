@@ -17,6 +17,11 @@ const client = new MongoClient(uri, {
     deprecationErrors: true,
   },
 });
+//middleware
+const verifyToken = (req, res, next) => {
+  const authHeader = req?.headers.authorization;
+  next();
+};
 
 async function run() {
   try {
@@ -61,7 +66,7 @@ async function run() {
     });
 
     // Get a specific car by ID
-    app.get("/car/:id", async (req, res) => {
+    app.get("/car/:id", verifyToken, async (req, res) => {
       const { id } = req.params;
       try {
         const result = await carCollection.findOne({
