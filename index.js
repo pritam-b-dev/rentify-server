@@ -38,11 +38,21 @@ async function run() {
       res.json(result);
     });
 
-    // Get all cars
+    //get all cars and search and filter api
+
     app.get("/car", async (req, res) => {
-      const result = await carCollection.find().toArray();
+      const { search, carType } = req.query;
+      const filter = {};
+      if (search) {
+        filter.carName = { $regex: search, $options: "i" };
+      }
+      if (carType) {
+        filter.carType = carType;
+      }
+      const result = await carCollection.find(filter).toArray();
       res.json(result);
     });
+    //get all cars and search and filter api ends
 
     // Get a specific car by ID
     app.get("/car/:id", async (req, res) => {
@@ -100,22 +110,6 @@ async function run() {
     });
 
     //booking api ends
-
-    //search and filter api
-
-    app.get("/car", async (req, res) => {
-      const { search, carType } = req.query;
-      const filter = {};
-      if (search) {
-        filter.carName = { $regex: search, $options: "i" };
-      }
-      if (carType) {
-        filter.carType = carType;
-      }
-      const result = await carCollection.find(filter).toArray();
-      res.json(result);
-    });
-    //search and filter api ends
   } catch (error) {
     console.error(error);
   }
