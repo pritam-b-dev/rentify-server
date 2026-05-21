@@ -6,6 +6,7 @@ app.use(cors());
 const dotenv = require("dotenv");
 dotenv.config();
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
+
 const uri = process.env.MONGODB_URI;
 const PORT = 5000;
 
@@ -16,6 +17,7 @@ const client = new MongoClient(uri, {
     deprecationErrors: true,
   },
 });
+
 async function run() {
   try {
     await client.connect();
@@ -24,27 +26,25 @@ async function run() {
       "Pinged your deployment. You successfully connected to MongoDB!",
     );
 
-    //declareing db and collections starts.
-
+    // DB and Collections
     const db = client.db("rentify");
     const carCollection = db.collection("car");
+    const bookingCollection = db.collection("bookings");
 
-    //declareing db and collections end.
-    //-------------------------------------------------------
-
-    // api for cars starts
-
+    // Create a car
     app.post("/car", async (req, res) => {
       const carData = req.body;
       const result = await carCollection.insertOne(carData);
       res.json(result);
     });
 
+    // Get all cars
     app.get("/car", async (req, res) => {
       const result = await carCollection.find().toArray();
       res.json(result);
     });
 
+    // Get a specific car by ID
     app.get("/car/:id", async (req, res) => {
       const { id } = req.params;
       try {
@@ -57,6 +57,7 @@ async function run() {
       }
     });
 
+    // Update car details
     app.patch("/car/:id", async (req, res) => {
       const { id } = req.params;
       const updatedData = req.body;
@@ -71,6 +72,7 @@ async function run() {
       }
     });
 
+    // Delete a car
     app.delete("/car/:id", async (req, res) => {
       const { id } = req.params;
       try {
@@ -83,18 +85,27 @@ async function run() {
       }
     });
 
-    // api for cars ends
-    //------------------------------------------------------
+    //booking api
+
+    app.post("/bookings", async (req, res) => {
+      const bookingData = req.body;
+      const result = await bookingCollection.insertOne(bookingData);
+      res.json(result);
+    });
   } catch (error) {
     console.error(error);
   }
 }
+
+// Run the MongoDB connection function
 run().catch(console.dir);
 
+// Base Route
 app.get("/", (req, res) => {
   res.send("server is running fine");
 });
 
+// Start Server
 app.listen(PORT, () => {
   console.log(`server running on port ${PORT}`);
 });
