@@ -54,6 +54,12 @@ async function run() {
     });
     //get all cars and search and filter api ends
 
+    app.get("/car/user/:userId", async (req, res) => {
+      const { userId } = req.params;
+      const result = await carCollection.find({ userId }).toArray();
+      res.json(result);
+    });
+
     // Get a specific car by ID
     app.get("/car/:id", async (req, res) => {
       const { id } = req.params;
