@@ -9,7 +9,7 @@ const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const { createRemoteJWKSet, jwtVerify } = require("jose-cjs");
 
 const uri = process.env.MONGODB_URI;
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 const client = new MongoClient(uri, {
   serverApi: {
