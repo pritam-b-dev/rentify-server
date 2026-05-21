@@ -54,7 +54,7 @@ async function run() {
     const bookingCollection = db.collection("bookings");
 
     // Create a car
-    app.post("/car", async (req, res) => {
+    app.post("/car", verifyToken, async (req, res) => {
       const carData = req.body;
       const result = await carCollection.insertOne(carData);
       res.json(result);
@@ -76,7 +76,7 @@ async function run() {
     });
     //get all cars and search and filter api ends
 
-    app.get("/car/user/:userId", async (req, res) => {
+    app.get("/car/user/:userId", verifyToken, async (req, res) => {
       const { userId } = req.params;
       const result = await carCollection.find({ userId }).toArray();
       res.json(result);
@@ -96,7 +96,7 @@ async function run() {
     });
 
     // Update car details
-    app.patch("/car/:id", async (req, res) => {
+    app.patch("/car/:id", verifyToken, async (req, res) => {
       const { id } = req.params;
       const updatedData = req.body;
       try {
@@ -111,7 +111,7 @@ async function run() {
     });
 
     // Delete a car
-    app.delete("/car/:id", async (req, res) => {
+    app.delete("/car/:id", verifyToken, async (req, res) => {
       const { id } = req.params;
       try {
         const result = await carCollection.deleteOne({
@@ -125,7 +125,7 @@ async function run() {
 
     //booking api
 
-    app.post("/bookings", async (req, res) => {
+    app.post("/bookings", verifyToken, async (req, res) => {
       const bookingData = req.body;
       const result = await bookingCollection.insertOne(bookingData);
       await carCollection.updateOne(
@@ -135,7 +135,7 @@ async function run() {
       res.json(result);
     });
 
-    app.get("/bookings/:userId", async (req, res) => {
+    app.get("/bookings/:userId", verifyToken, async (req, res) => {
       const { userId } = req.params;
       const result = await bookingCollection.find({ userId }).toArray();
       res.json(result);
